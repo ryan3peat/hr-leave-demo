@@ -140,25 +140,86 @@ export function ApprovalQueue() {
                   return otherEmployee?.department === employee?.department;
                 });
 
+                // Get detailed overlapping employee information
+                const overlappingEmployees = overlappingForThisLeave.map((otherLeave) => {
+                  const otherEmployee = getEmployee(otherLeave.employeeId);
+                  return {
+                    leave: otherLeave,
+                    employee: otherEmployee,
+                    sameDepartment: otherEmployee?.department === employee?.department,
+                  };
+                }).sort((a, b) => {
+                  if (a.sameDepartment && !b.sameDepartment) return -1;
+                  if (!a.sameDepartment && b.sameDepartment) return 1;
+                  return (a.employee?.name || "").localeCompare(b.employee?.name || "");
+                });
+
                 return (
                   <Card key={leave.id} className="border-2">
                     <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">{employee?.name || "Unknown"}</CardTitle>
                     {overlappingForThisLeave.length > 0 && (
-                      <div className="flex items-center gap-1">
-                        <div className={`w-2 h-2 rounded-full ${
+                      <div className="group relative">
+                        <div className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
                           sameDeptOverlaps.length > 0
-                            ? "bg-red-500"
-                            : "bg-amber-500"
-                        }`} />
-                        <span className={`text-xs font-medium ${
-                          sameDeptOverlaps.length > 0
-                            ? "text-red-600 dark:text-red-400"
-                            : "text-amber-600 dark:text-amber-400"
+                            ? "bg-red-100 border-red-400 dark:bg-red-900/20 dark:border-red-600"
+                            : "bg-amber-100 border-amber-400 dark:bg-amber-900/20 dark:border-amber-600"
                         }`}>
-                          {sameDeptOverlaps.length > 0 ? sameDeptOverlaps.length : overlappingForThisLeave.length}
-                        </span>
+                          <span className={`text-sm font-bold ${
+                            sameDeptOverlaps.length > 0
+                              ? "text-red-700 dark:text-red-300"
+                              : "text-amber-700 dark:text-amber-300"
+                          }`}>
+                            {sameDeptOverlaps.length > 0 ? sameDeptOverlaps.length : overlappingForThisLeave.length}
+                          </span>
+                        </div>
+
+                        {/* Hover Tooltip */}
+                        <div className="absolute right-0 top-10 w-80 p-3 bg-popover border border-border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                          <div className="text-sm font-medium text-popover-foreground mb-2">
+                            ⚠️ Overlapping Leave ({overlappingForThisLeave.length} employee{overlappingForThisLeave.length !== 1 ? 's' : ''})
+                          </div>
+                          <div className="space-y-2 max-h-40 overflow-y-auto">
+                            {overlappingEmployees.map(({ leave, employee: overlapEmployee, sameDepartment }) => (
+                              <div
+                                key={leave.id}
+                                className={`p-2 rounded text-sm ${
+                                  sameDepartment
+                                    ? "bg-red-50 border border-red-200 dark:bg-red-900/20 dark:border-red-800"
+                                    : "bg-amber-50 border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+                                }`}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <span className="font-medium">{overlapEmployee?.name || "Unknown"}</span>
+                                  {sameDepartment && (
+                                    <span className="text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 px-2 py-1 rounded">
+                                      Same Dept
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="text-xs text-muted-foreground mt-1">
+                                  {leave.leaveType} • {formatDateRange(leave.startDate, leave.endDate)}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-2 pt-2 border-t">
+                            {sameDeptOverlaps.length > 0 && (
+                              <span className="text-red-600 font-medium">
+                                {sameDeptOverlaps.length} from same department
+                              </span>
+                            )}
+                            {sameDeptOverlaps.length > 0 && overlappingForThisLeave.length - sameDeptOverlaps.length > 0 && (
+                              <span> • </span>
+                            )}
+                            {overlappingForThisLeave.length - sameDeptOverlaps.length > 0 && (
+                              <span>
+                                {overlappingForThisLeave.length - sameDeptOverlaps.length} from other departments
+                              </span>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
