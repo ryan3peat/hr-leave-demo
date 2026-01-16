@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { formatDateRange } from "@/lib/dateUtils";
 import { isFutureDate } from "@/lib/dateUtils";
-import { Calendar, Clock, Plus } from "lucide-react";
+import { Calendar, Plus } from "lucide-react";
 
 export default function EmployeeDashboard() {
   const { currentEmployeeId, getEmployee, getEmployeeBalance, getEmployeeLeaves } =
@@ -69,7 +69,7 @@ export default function EmployeeDashboard() {
       <LeaveEstimator />
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link href="/employee/submit">
           <Card className="hover:bg-accent transition-colors cursor-pointer h-full">
             <CardHeader>
@@ -87,16 +87,6 @@ export default function EmployeeDashboard() {
             </CardHeader>
             <CardContent>
               <Calendar className="h-8 w-8 text-muted-foreground" />
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/employee/history">
-          <Card className="hover:bg-accent transition-colors cursor-pointer h-full">
-            <CardHeader>
-              <CardTitle className="text-base">Leave History</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Clock className="h-8 w-8 text-muted-foreground" />
             </CardContent>
           </Card>
         </Link>
@@ -144,32 +134,41 @@ export default function EmployeeDashboard() {
           {recentActivity.length === 0 ? (
             <p className="text-sm text-muted-foreground">No recent activity</p>
           ) : (
-            <div className="space-y-3">
-              {recentActivity.map((leave) => (
-                <div
-                  key={leave.id}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-card"
-                >
-                  <div>
-                    <p className="font-medium">{leave.leaveType}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatDateRange(leave.startDate, leave.endDate)} • {leave.duration}
-                    </p>
-                  </div>
-                  <span
-                    className={`px-2 py-1 text-xs rounded-full ${
-                      leave.status === "Approved"
-                        ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                        : leave.status === "Pending"
-                        ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                        : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                    }`}
+            <>
+              <div className="space-y-3">
+                {recentActivity.map((leave) => (
+                  <div
+                    key={leave.id}
+                    className="flex items-center justify-between p-3 rounded-lg border bg-card"
                   >
-                    {leave.status}
-                  </span>
-                </div>
-              ))}
-            </div>
+                    <div>
+                      <p className="font-medium">{leave.leaveType}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDateRange(leave.startDate, leave.endDate)} • {leave.duration}
+                      </p>
+                    </div>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        leave.status === "Approved"
+                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                          : leave.status === "Pending"
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                      }`}
+                    >
+                      {leave.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 pt-4 border-t">
+                <Link href="/employee/history">
+                  <Button variant="outline" className="w-full">
+                    More
+                  </Button>
+                </Link>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

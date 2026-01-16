@@ -2,14 +2,6 @@
 
 import { useState } from "react";
 import { useLeaveManagement } from "@/hooks/useLeaveManagement";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -80,67 +72,62 @@ export function ApprovalQueue() {
               No pending leave requests
             </div>
           ) : (
-            <div className="rounded-md border overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee</TableHead>
-                    <TableHead>Date Range</TableHead>
-                    <TableHead>Leave Type</TableHead>
-                    <TableHead>Duration</TableHead>
-                    <TableHead>Days</TableHead>
-                    <TableHead>Submitted</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {pendingLeaves.map((leave) => {
-                    const employee = getEmployee(leave.employeeId);
-                    const days = calculateLeaveDays(
-                      leave.startDate,
-                      leave.endDate,
-                      leave.duration
-                    );
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pendingLeaves.map((leave) => {
+                const employee = getEmployee(leave.employeeId);
+                const days = calculateLeaveDays(
+                  leave.startDate,
+                  leave.endDate,
+                  leave.duration
+                );
 
-                    return (
-                      <TableRow key={leave.id}>
-                        <TableCell className="font-medium">
-                          {employee?.name || "Unknown"}
-                        </TableCell>
-                        <TableCell>
+                return (
+                  <Card key={leave.id} className="border-2">
+                    <CardHeader>
+                      <CardTitle className="text-lg">{employee?.name || "Unknown"}</CardTitle>
+                      <CardDescription>{leave.leaveType}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="space-y-1 text-sm">
+                        <div>
+                          <span className="font-medium">Date Range:</span>{" "}
                           {formatDateRange(leave.startDate, leave.endDate)}
-                        </TableCell>
-                        <TableCell>{leave.leaveType}</TableCell>
-                        <TableCell>{leave.duration}</TableCell>
-                        <TableCell>{days.toFixed(1)}</TableCell>
-                        <TableCell>
+                        </div>
+                        <div>
+                          <span className="font-medium">Duration:</span> {leave.duration}
+                        </div>
+                        <div>
+                          <span className="font-medium">Days:</span> {days.toFixed(1)}
+                        </div>
+                        <div>
+                          <span className="font-medium">Submitted:</span>{" "}
                           {leave.submittedAt.toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              size="sm"
-                              variant="default"
-                              onClick={() => openDialog(leave.id, "approve")}
-                            >
-                              <CheckCircle2 className="h-4 w-4 mr-1" />
-                              Approve
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              onClick={() => openDialog(leave.id, "reject")}
-                            >
-                              <XCircle className="h-4 w-4 mr-1" />
-                              Reject
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="flex-1"
+                          onClick={() => openDialog(leave.id, "approve")}
+                        >
+                          <CheckCircle2 className="h-4 w-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="flex-1"
+                          onClick={() => openDialog(leave.id, "reject")}
+                        >
+                          <XCircle className="h-4 w-4 mr-1" />
+                          Reject
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </CardContent>

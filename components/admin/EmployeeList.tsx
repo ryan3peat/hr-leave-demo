@@ -14,7 +14,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { calculateYearsOfService } from "@/lib/dateUtils";
 import { EmployeeGrade } from "@/lib/types";
 import { AddEmployeeForm } from "./AddEmployeeForm";
 import { UserPlus } from "lucide-react";
@@ -23,7 +22,7 @@ export function EmployeeList() {
   const { employees, getEmployeeBalance } = useLeaveManagement();
   const [searchTerm, setSearchTerm] = useState("");
   const [gradeFilter, setGradeFilter] = useState<EmployeeGrade | "All">("All");
-  const [sortBy, setSortBy] = useState<"name" | "grade" | "balance">("name");
+  const [sortBy, setSortBy] = useState<"name" | "balance">("name");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -52,9 +51,6 @@ export function EmployeeList() {
         case "name":
           comparison = a.name.localeCompare(b.name);
           break;
-        case "grade":
-          comparison = a.grade.localeCompare(b.grade);
-          break;
         case "balance":
           const balanceA = getEmployeeBalance(a.id).annualRemaining;
           const balanceB = getEmployeeBalance(b.id).annualRemaining;
@@ -67,7 +63,7 @@ export function EmployeeList() {
     return filtered;
   }, [employees, searchTerm, gradeFilter, sortBy, sortOrder, getEmployeeBalance]);
 
-  const handleSort = (column: "name" | "grade" | "balance") => {
+  const handleSort = (column: "name" | "balance") => {
     if (sortBy === column) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
@@ -132,16 +128,6 @@ export function EmployeeList() {
                   Name{" "}
                   {sortBy === "name" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Department</TableHead>
-                <TableHead
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => handleSort("grade")}
-                >
-                  Grade{" "}
-                  {sortBy === "grade" && (sortOrder === "asc" ? "↑" : "↓")}
-                </TableHead>
-                <TableHead>Years of Service</TableHead>
                 <TableHead>Annual Entitlement</TableHead>
                 <TableHead>Annual Used</TableHead>
                 <TableHead
@@ -157,22 +143,17 @@ export function EmployeeList() {
             <TableBody>
               {filteredEmployees.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
                     No employees found
                   </TableCell>
                 </TableRow>
               ) : (
                 filteredEmployees.map((employee) => {
                   const balance = getEmployeeBalance(employee.id);
-                  const yearsOfService = calculateYearsOfService(employee.firstDayOfWork);
 
                   return (
                     <TableRow key={employee.id}>
                       <TableCell className="font-medium">{employee.name}</TableCell>
-                      <TableCell>{employee.email}</TableCell>
-                      <TableCell>{employee.department}</TableCell>
-                      <TableCell>{employee.grade}</TableCell>
-                      <TableCell>{yearsOfService.toFixed(1)}</TableCell>
                       <TableCell>{balance.annualEntitlement}</TableCell>
                       <TableCell>{balance.annualUsed.toFixed(1)}</TableCell>
                       <TableCell className="font-semibold">
