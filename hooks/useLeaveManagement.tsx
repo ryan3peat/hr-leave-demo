@@ -15,6 +15,7 @@ interface LeaveManagementContextType {
   getEmployeeLeaves: (employeeId: string) => LeaveRequest[];
   submitLeaveRequest: (request: Omit<LeaveRequest, "id" | "submittedAt">) => void;
   updateLeaveStatus: (leaveId: string, status: "Approved" | "Rejected", rejectReason?: string) => void;
+  withdrawLeaveRequest: (leaveId: string) => void;
   getPendingLeaves: () => LeaveRequest[];
   getAllLeaves: () => LeaveRequest[];
   addEmployee: (employee: Omit<Employee, "id">) => void;
@@ -80,6 +81,13 @@ export function LeaveManagementProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const withdrawLeaveRequest = useCallback(
+    (leaveId: string) => {
+      setLeaveRequests((prev) => prev.filter((leave) => leave.id !== leaveId));
+    },
+    []
+  );
+
   const getPendingLeaves = useCallback(() => {
     return leaveRequests.filter((leave) => leave.status === "Pending");
   }, [leaveRequests]);
@@ -111,6 +119,7 @@ export function LeaveManagementProvider({ children }: { children: ReactNode }) {
         getEmployeeLeaves,
         submitLeaveRequest,
         updateLeaveStatus,
+        withdrawLeaveRequest,
         getPendingLeaves,
         getAllLeaves,
         addEmployee,

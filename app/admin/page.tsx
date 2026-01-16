@@ -73,7 +73,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link href="/admin/analytics">
           <Card className="modern-card cursor-pointer h-full group">
             <CardHeader className="pb-4">
@@ -97,20 +97,6 @@ export default function AdminDashboard() {
               <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">Employee Management</CardTitle>
               <CardDescription className="text-muted-foreground">
                 View and manage employee leave balances
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Link href="/admin/approvals">
-          <Card className="modern-card cursor-pointer h-full group">
-            <CardHeader className="pb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                <CheckCircle2 className="h-6 w-6 text-primary" />
-              </div>
-              <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">Approval Queue</CardTitle>
-              <CardDescription className="text-muted-foreground">
-                Review and approve pending leave requests
               </CardDescription>
             </CardHeader>
           </Card>

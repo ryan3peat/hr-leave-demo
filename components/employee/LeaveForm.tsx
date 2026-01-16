@@ -114,6 +114,11 @@ export function LeaveForm() {
       ? calculateLeaveDays(new Date(startDate), new Date(endDate), duration)
       : 0;
 
+  // Calculate negative leave impact
+  const negativeLeaveImpact = requestedDays > 0 && isAnnualLeave(leaveType)
+    ? Math.max(0, requestedDays - balance.annualRemaining)
+    : 0;
+
   // Get public holidays in the selected range
   const publicHolidaysInRange =
     startDate && endDate
@@ -129,6 +134,25 @@ export function LeaveForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        {/* Current Balance Display */}
+        <div className="mb-6 p-4 rounded-lg border bg-card">
+          <h3 className="text-lg font-semibold mb-3">Current Leave Balance</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Annual Leave</p>
+              <p className="text-2xl font-bold text-primary">{balance.annualRemaining.toFixed(1)}</p>
+              <p className="text-xs text-muted-foreground">
+                {balance.annualEntitlement} days entitlement • {balance.annualUsed.toFixed(1)} days used
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-medium">Non-Annual Leave</p>
+              <p className="text-2xl font-bold text-primary">{balance.nonAnnualUsed.toFixed(1)}</p>
+              <p className="text-xs text-muted-foreground">days used this year</p>
+            </div>
+          </div>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Date Range */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -223,14 +247,22 @@ export function LeaveForm() {
                   <p className="text-sm text-muted-foreground">
                     Remaining Balance: {balance.annualRemaining.toFixed(1)} days
                   </p>
+                  <p className="text-sm text-muted-foreground">
+                    After approval: {(balance.annualRemaining - requestedDays).toFixed(1)} days
+                  </p>
                   {balance.annualRemaining >= requestedDays ? (
                     <p className="text-sm text-green-600 mt-2 font-medium">
                       ✓ Sufficient balance available
                     </p>
                   ) : (
-                    <p className="text-sm text-red-600 mt-2 font-medium">
-                      ✗ Insufficient balance
-                    </p>
+                    <div className="mt-2">
+                      <p className="text-sm text-red-600 font-medium">
+                        ⚠ You will have {negativeLeaveImpact.toFixed(1)} negative leave day(s)
+                      </p>
+                      <p className="text-xs text-red-600 mt-1">
+                        This request will put you into negative leave balance
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>

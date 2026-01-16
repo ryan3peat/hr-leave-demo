@@ -60,7 +60,7 @@ function generateEmployee(
  */
 export const MOCK_EMPLOYEES: Employee[] = [
   // Long-tenured employees (2010-2012) - 11+ years
-  generateEmployee("emp001", "James Smith", "Executive", "Engineering", 2010, 0, 15),
+  generateEmployee("emp001", "Denis Ma", "Executive", "Engineering", 2010, 0, 15),
   generateEmployee("emp002", "Mary Johnson", "Senior", "Sales", 2011, 2, 20),
   generateEmployee("emp003", "John Williams", "Senior", "Marketing", 2012, 5, 10),
   generateEmployee("emp004", "Patricia Brown", "Mid", "HR", 2011, 8, 5),

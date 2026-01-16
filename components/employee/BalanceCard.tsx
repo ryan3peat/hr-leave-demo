@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LeaveBalance } from "@/lib/types";
+import { Info } from "lucide-react";
 
 interface BalanceCardProps {
   title: string;
@@ -19,7 +20,19 @@ export function BalanceCard({ title, balance, isAnnual = true }: BalanceCardProp
   return (
     <Card className="w-full">
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold">{title}</CardTitle>
+        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+          {title}
+          {!isAnnual && (
+            <div className="group relative">
+              <Info className="h-4 w-4 text-muted-foreground cursor-help" />
+              <div className="absolute left-0 top-6 w-64 p-2 bg-popover border rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                <p className="text-sm text-popover-foreground">
+                  Includes Sick Leave, Personal Leave, Bereavement Leave, and other non-annual leave types that don&apos;t count towards your annual entitlement.
+                </p>
+              </div>
+            </div>
+          )}
+        </CardTitle>
         <CardDescription>
           {isAnnual
             ? `Entitlement: ${total} days`
@@ -34,7 +47,12 @@ export function BalanceCard({ title, balance, isAnnual = true }: BalanceCardProp
           </div>
           {isAnnual && (
             <>
-              <Progress value={percentage} className="h-2" />
+              <div className="relative">
+                <Progress value={percentage} className="h-2" />
+                <div className="absolute -top-1 right-0 text-xs font-medium bg-background px-1 rounded">
+                  {used.toFixed(1)}
+                </div>
+              </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Remaining</span>
                 <span className="font-semibold text-primary">

@@ -44,19 +44,11 @@ export default function EmployeeDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Welcome, {employee.name}</h1>
-          <p className="text-muted-foreground mt-1">
-            {employee.grade} • {employee.email}
-          </p>
-        </div>
-        <Link href="/employee/submit">
-          <Button size="lg" className="w-full sm:w-auto">
-            <Plus className="mr-2 h-4 w-4" />
-            Submit Leave Request
-          </Button>
-        </Link>
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Welcome, {employee.name}</h1>
+        <p className="text-muted-foreground mt-1">
+          {employee.grade} • {employee.email}
+        </p>
       </div>
 
       {/* Balance Cards */}

@@ -15,12 +15,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { formatDateRange } from "@/lib/dateUtils";
 import { calculateLeaveDays } from "@/lib/dateUtils";
 import { LEAVE_TYPES } from "@/lib/types";
+import { X } from "lucide-react";
 
 export function LeaveHistoryTable() {
-  const { currentEmployeeId, getEmployeeLeaves } = useLeaveManagement();
+  const { currentEmployeeId, getEmployeeLeaves, withdrawLeaveRequest } = useLeaveManagement();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<LeaveStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<LeaveType | "All">("All");
@@ -187,12 +189,13 @@ export function LeaveHistoryTable() {
                   Status{" "}
                   {sortBy === "status" && (sortOrder === "asc" ? "↑" : "↓")}
                 </TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedLeaves.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
                     No leave records found
                   </TableCell>
                 </TableRow>
@@ -219,6 +222,19 @@ export function LeaveHistoryTable() {
                       >
                         {leave.status}
                       </span>
+                    </TableCell>
+                    <TableCell>
+                      {leave.status === "Pending" && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => withdrawLeaveRequest(leave.id)}
+                          className="text-xs"
+                        >
+                          <X className="h-3 w-3 mr-1" />
+                          Withdraw
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))

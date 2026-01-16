@@ -9,10 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatDateRange } from "@/lib/dateUtils";
 import { calculateLeaveDays } from "@/lib/dateUtils";
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, XCircle, Trash2 } from "lucide-react";
 
 export function ApprovalQueue() {
-  const { getPendingLeaves, getEmployee, updateLeaveStatus, leaveRequests } =
+  const { getPendingLeaves, getEmployee, updateLeaveStatus, withdrawLeaveRequest, leaveRequests } =
     useLeaveManagement();
   const [selectedLeave, setSelectedLeave] = useState<string | null>(null);
   const [action, setAction] = useState<"approve" | "reject" | null>(null);
@@ -57,6 +57,48 @@ export function ApprovalQueue() {
     ? getEmployee(selectedLeaveData.employeeId)
     : null;
 
+  // Get overlapping approved leaves for the selected request
+  const getOverlappingApprovedLeaves = (leaveData: typeof selectedLeaveData) => {
+    if (!leaveData || !selectedEmployee) return [];
+
+    const overlappingLeaves = leaveRequests.filter((leave) => {
+      // Only approved leaves from other employees
+      if (leave.status !== "Approved" || leave.employeeId === leaveData.employeeId) {
+        return false;
+      }
+
+      // Check for date overlap
+      const leaveStart = leave.startDate;
+      const leaveEnd = leave.endDate;
+      const requestStart = leaveData.startDate;
+      const requestEnd = leaveData.endDate;
+
+      // Check if date ranges overlap
+      return leaveStart <= requestEnd && leaveEnd >= requestStart;
+    });
+
+    // Get employee details and sort by department priority
+    const overlappingWithEmployees = overlappingLeaves.map((leave) => {
+      const employee = getEmployee(leave.employeeId);
+      return {
+        leave,
+        employee,
+        sameDepartment: employee?.department === selectedEmployee.department,
+      };
+    });
+
+    // Sort: same department first, then by employee name
+    return overlappingWithEmployees.sort((a, b) => {
+      if (a.sameDepartment && !b.sameDepartment) return -1;
+      if (!a.sameDepartment && b.sameDepartment) return 1;
+      return (a.employee?.name || "").localeCompare(b.employee?.name || "");
+    });
+  };
+
+  const overlappingApprovedLeaves = selectedLeaveData
+    ? getOverlappingApprovedLeaves(selectedLeaveData)
+    : [];
+
   return (
     <>
       <Card>
@@ -81,13 +123,48 @@ export function ApprovalQueue() {
                   leave.duration
                 );
 
+                // Get overlapping approved leaves for this request
+                const overlappingForThisLeave = leaveRequests.filter((otherLeave) => {
+                  if (otherLeave.status !== "Approved" || otherLeave.employeeId === leave.employeeId) {
+                    return false;
+                  }
+                  const otherStart = otherLeave.startDate;
+                  const otherEnd = otherLeave.endDate;
+                  const thisStart = leave.startDate;
+                  const thisEnd = leave.endDate;
+                  return otherStart <= thisEnd && otherEnd >= thisStart;
+                });
+
+                const sameDeptOverlaps = overlappingForThisLeave.filter((otherLeave) => {
+                  const otherEmployee = getEmployee(otherLeave.employeeId);
+                  return otherEmployee?.department === employee?.department;
+                });
+
                 return (
                   <Card key={leave.id} className="border-2">
                     <CardHeader>
-                      <CardTitle className="text-lg">{employee?.name || "Unknown"}</CardTitle>
-                      <CardDescription>{leave.leaveType}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">{employee?.name || "Unknown"}</CardTitle>
+                    {overlappingForThisLeave.length > 0 && (
+                      <div className="flex items-center gap-1">
+                        <div className={`w-2 h-2 rounded-full ${
+                          sameDeptOverlaps.length > 0
+                            ? "bg-red-500"
+                            : "bg-amber-500"
+                        }`} />
+                        <span className={`text-xs font-medium ${
+                          sameDeptOverlaps.length > 0
+                            ? "text-red-600 dark:text-red-400"
+                            : "text-amber-600 dark:text-amber-400"
+                        }`}>
+                          {sameDeptOverlaps.length > 0 ? sameDeptOverlaps.length : overlappingForThisLeave.length}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <CardDescription>{leave.leaveType}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
                       <div className="space-y-1 text-sm">
                         <div>
                           <span className="font-medium">Date Range:</span>{" "}
@@ -105,6 +182,15 @@ export function ApprovalQueue() {
                         </div>
                       </div>
                       <div className="flex gap-2 pt-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => withdrawLeaveRequest(leave.id)}
+                          className="flex-1"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Remove
+                        </Button>
                         <Button
                           size="sm"
                           variant="default"
@@ -182,6 +268,55 @@ export function ApprovalQueue() {
                   ).toFixed(1)}
                 </div>
               </div>
+
+              {/* Overlapping Approved Leaves */}
+              {overlappingApprovedLeaves.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-sm font-medium text-amber-700 dark:text-amber-400">
+                    ⚠️ Other employees on leave during this period:
+                  </div>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {overlappingApprovedLeaves.map(({ leave, employee, sameDepartment }) => (
+                      <div
+                        key={leave.id}
+                        className={`p-2 rounded border text-sm ${
+                          sameDepartment
+                            ? "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800"
+                            : "bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">{employee?.name || "Unknown"}</span>
+                          {sameDepartment && (
+                            <span className="text-xs bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 px-2 py-1 rounded">
+                              Same Dept
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-1">
+                          {formatDateRange(leave.startDate, leave.endDate)} • {leave.leaveType}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    {overlappingApprovedLeaves.filter(l => l.sameDepartment).length > 0 && (
+                      <span className="text-red-600 font-medium">
+                        {overlappingApprovedLeaves.filter(l => l.sameDepartment).length} from same department
+                      </span>
+                    )}
+                    {overlappingApprovedLeaves.filter(l => l.sameDepartment).length > 0 &&
+                     overlappingApprovedLeaves.filter(l => !l.sameDepartment).length > 0 && (
+                      <span> • </span>
+                    )}
+                    {overlappingApprovedLeaves.filter(l => !l.sameDepartment).length > 0 && (
+                      <span>
+                        {overlappingApprovedLeaves.filter(l => !l.sameDepartment).length} from other departments
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
               {action === "reject" && (
                 <div className="space-y-2">
                   <Label htmlFor="rejectReason">Reject Reason *</Label>
