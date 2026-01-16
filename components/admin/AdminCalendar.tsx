@@ -49,16 +49,15 @@ export function AdminCalendar() {
     });
   }, [employees, employeeFilter, departmentFilter, gradeFilter]);
 
-  const filteredEmployeeIds = new Set(filteredEmployees.map((emp) => emp.id));
-
   // Filter leaves to only show Pending and Approved, and match employee filters
   const filteredLeaves = useMemo(() => {
+    const filteredEmployeeIds = new Set(filteredEmployees.map((emp) => emp.id));
     return allLeaves.filter((leave) => {
       if (leave.status === "Rejected") return false;
       if (!filteredEmployeeIds.has(leave.employeeId)) return false;
       return true;
     });
-  }, [allLeaves, filteredEmployeeIds]);
+  }, [allLeaves, filteredEmployees]);
 
   // Get first day of month and number of days
   const firstDayOfMonth = new Date(year, month, 1);
@@ -154,7 +153,7 @@ export function AdminCalendar() {
               <div>
                 <CardTitle>All Employees Leave Calendar</CardTitle>
                 <CardDescription>
-                  View all employees' leave requests (Pending & Approved only)
+                  View all employees&apos; leave requests (Pending &amp; Approved only)
                 </CardDescription>
               </div>
               <div className="flex items-center gap-2">
@@ -322,7 +321,7 @@ export function AdminCalendar() {
             </div>
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            Calendar shows employee names. Click on an employee's name to view leave details.
+            Calendar shows employee names. Click on an employee&apos;s name to view leave details.
           </p>
         </CardContent>
       </Card>

@@ -29,14 +29,9 @@ export function LeaveHistoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  if (!currentEmployeeId) {
-    return <div>Please select an employee</div>;
-  }
-
-  const allLeaves = getEmployeeLeaves(currentEmployeeId);
-
   // Filter and sort leaves
   const filteredLeaves = useMemo(() => {
+    const allLeaves = currentEmployeeId ? getEmployeeLeaves(currentEmployeeId) : [];
     let filtered = [...allLeaves];
 
     // Search filter (by leave type)
@@ -74,7 +69,11 @@ export function LeaveHistoryTable() {
     });
 
     return filtered;
-  }, [allLeaves, searchTerm, statusFilter, typeFilter, sortBy, sortOrder]);
+  }, [currentEmployeeId, getEmployeeLeaves, searchTerm, statusFilter, typeFilter, sortBy, sortOrder]);
+
+  if (!currentEmployeeId) {
+    return <div>Please select an employee</div>;
+  }
 
   // Pagination
   const totalPages = Math.ceil(filteredLeaves.length / itemsPerPage);

@@ -23,7 +23,7 @@ const DialogContext = React.createContext<{
 
 const Dialog = ({ open = false, onOpenChange, children }: DialogProps) => {
   return (
-    <DialogContext.Provider value={{ open, onOpenChange }}>
+    <DialogContext.Provider value={{ open, onOpenChange: onOpenChange || (() => {}) }}>
       {children}
     </DialogContext.Provider>
   )

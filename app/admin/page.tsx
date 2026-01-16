@@ -133,7 +133,7 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle className="text-base">Leave Calendar</CardTitle>
               <CardDescription>
-                View all employees' leave on calendar
+                View all employees&apos; leave on calendar
               </CardDescription>
             </CardHeader>
             <CardContent>

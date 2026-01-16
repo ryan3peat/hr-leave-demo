@@ -183,7 +183,7 @@ export function LeaveEstimator() {
         {estimatedBalance === null && targetDate && (
           <div className="p-3 rounded-md bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
             <p className="text-sm text-yellow-600 dark:text-yellow-400">
-              Please select a future date and click "Calculate Estimate"
+              Please select a future date and click &quot;Calculate Estimate&quot;
             </p>
           </div>
         )}
