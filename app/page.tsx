@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[90vh] px-4">
       {/* Hero Section */}
-      <div className="text-center space-y-8 max-w-4xl mx-auto">
+      <div className="text-center space-y-12 max-w-4xl mx-auto">
         {/* Logo */}
         <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto">
           <Image
@@ -21,21 +21,8 @@ export default function Home() {
           />
         </div>
 
-        {/* Title */}
-        <div className="space-y-4">
-          <h1 className="text-5xl md:text-7xl font-thin tracking-tight text-foreground">
-            Leave
-            <span className="block font-semibold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
-              Management
-            </span>
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
-            Streamline workforce management with intelligent leave tracking and seamless approvals
-          </p>
-        </div>
-
         {/* Portal Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mt-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
           <Card className="group border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
             <CardHeader className="text-center pb-6">
               <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
