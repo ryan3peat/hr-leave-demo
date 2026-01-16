@@ -1,18 +1,25 @@
 "use client";
 
+import { useState } from "react";
 import { useLeaveManagement } from "@/hooks/useLeaveManagement";
 import { BalanceCard } from "@/components/employee/BalanceCard";
 import { LeaveEstimator } from "@/components/employee/LeaveEstimator";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Link from "next/link";
 import { formatDateRange } from "@/lib/dateUtils";
 import { isFutureDate } from "@/lib/dateUtils";
-import { Calendar, Plus } from "lucide-react";
+import { calculateLeaveDays } from "@/lib/dateUtils";
+import { Calendar, Plus, X } from "lucide-react";
 
 export default function EmployeeDashboard() {
-  const { currentEmployeeId, getEmployee, getEmployeeBalance, getEmployeeLeaves } =
+  const { currentEmployeeId, getEmployee, getEmployeeBalance, getEmployeeLeaves, withdrawLeaveRequest } =
     useLeaveManagement();
+
+  const [showMoreActivity, setShowMoreActivity] = useState(false);
+  const [selectedLeave, setSelectedLeave] = useState<string | null>(null);
+  const [showWithdrawDialog, setShowWithdrawDialog] = useState(false);
 
   if (!currentEmployeeId) {
     return <div>Please select an employee</div>;
@@ -37,18 +44,41 @@ export default function EmployeeDashboard() {
     .sort((a, b) => a.startDate.getTime() - b.startDate.getTime())
     .slice(0, 5);
 
-  // Get recent activity (last 5 leaves)
+  // Get recent activity (dynamic based on showMoreActivity)
   const recentActivity = leaves
     .sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime())
-    .slice(0, 5);
+    .slice(0, showMoreActivity ? 10 : 5);
+
+  const handleLeaveClick = (leaveId: string) => {
+    setSelectedLeave(leaveId);
+    setShowWithdrawDialog(true);
+  };
+
+  const handleWithdraw = () => {
+    if (selectedLeave) {
+      withdrawLeaveRequest(selectedLeave);
+      setShowWithdrawDialog(false);
+      setSelectedLeave(null);
+    }
+  };
+
+  const selectedLeaveData = selectedLeave ? leaves.find(l => l.id === selectedLeave) : null;
 
   return (
     <div className="space-y-6">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold">Welcome, {employee.name}</h1>
-        <p className="text-muted-foreground mt-1">
-          {employee.grade} • {employee.email}
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold">Welcome, {employee.name}</h1>
+          <p className="text-muted-foreground mt-1">
+            {employee.grade} • {employee.email}
+          </p>
+        </div>
+        <Link href="/employee/submit">
+          <Button size="lg" className="w-full sm:w-auto">
+            <Plus className="mr-2 h-4 w-4" />
+            Submit Leave Request
+          </Button>
+        </Link>
       </div>
 
       {/* Balance Cards */}
@@ -131,7 +161,10 @@ export default function EmployeeDashboard() {
                 {recentActivity.map((leave) => (
                   <div
                     key={leave.id}
-                    className="flex items-center justify-between p-3 rounded-lg border bg-card"
+                    className={`flex items-center justify-between p-3 rounded-lg border bg-card ${
+                      leave.status === "Pending" ? "cursor-pointer hover:bg-accent/50 transition-colors" : ""
+                    }`}
+                    onClick={() => leave.status === "Pending" && handleLeaveClick(leave.id)}
                   >
                     <div>
                       <p className="font-medium">{leave.leaveType}</p>
@@ -153,17 +186,69 @@ export default function EmployeeDashboard() {
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t">
-                <Link href="/employee/history">
-                  <Button variant="outline" className="w-full">
+              {!showMoreActivity && leaves.length > 5 && (
+                <div className="mt-4 pt-4 border-t">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setShowMoreActivity(true)}
+                  >
                     More
                   </Button>
-                </Link>
-              </div>
+                </div>
+              )}
             </>
           )}
         </CardContent>
       </Card>
+
+      {/* Withdraw Leave Dialog */}
+      <Dialog open={showWithdrawDialog} onOpenChange={setShowWithdrawDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Withdraw Leave Request</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to withdraw this leave request?
+            </DialogDescription>
+          </DialogHeader>
+          {selectedLeaveData && (
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <div>
+                  <strong>Leave Type:</strong> {selectedLeaveData.leaveType}
+                </div>
+                <div>
+                  <strong>Date Range:</strong>{" "}
+                  {formatDateRange(selectedLeaveData.startDate, selectedLeaveData.endDate)}
+                </div>
+                <div>
+                  <strong>Duration:</strong> {selectedLeaveData.duration}
+                </div>
+                <div>
+                  <strong>Days:</strong>{" "}
+                  {calculateLeaveDays(
+                    selectedLeaveData.startDate,
+                    selectedLeaveData.endDate,
+                    selectedLeaveData.duration
+                  ).toFixed(1)}
+                </div>
+                <div>
+                  <strong>Status:</strong> {selectedLeaveData.status}
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowWithdrawDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={handleWithdraw}>
+              <X className="h-4 w-4 mr-2" />
+              Withdraw Request
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

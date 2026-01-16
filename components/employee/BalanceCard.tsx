@@ -25,7 +25,7 @@ export function BalanceCard({ title, balance, isAnnual = true }: BalanceCardProp
           {!isAnnual && (
             <div className="group relative">
               <Info className="h-4 w-4 text-muted-foreground cursor-help" />
-              <div className="absolute left-0 top-6 w-64 p-2 bg-popover border rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+              <div className="absolute left-1/2 top-6 -translate-x-1/2 w-64 p-2 bg-popover border rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
                 <p className="text-sm text-popover-foreground">
                   Includes Sick Leave, Personal Leave, Bereavement Leave, and other non-annual leave types that don&apos;t count towards your annual entitlement.
                 </p>

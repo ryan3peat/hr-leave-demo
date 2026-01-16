@@ -173,10 +173,16 @@ export const MOCK_LEAVE_REQUESTS: LeaveRequest[] = [
   generateLeaveRequest("leave037", "emp014", 2024, 10, 12, 3, "Vacation", "Approved"),
   generateLeaveRequest("leave038", "emp015", 2024, 10, 18, 1, "Medical", "Approved"),
   
-  // Pending requests
+  // Pending requests - some with overlapping dates to demonstrate the feature
   generateLeaveRequest("leave039", "emp001", 2024, 11, 28, 3, "Vacation", "Pending"),
   generateLeaveRequest("leave040", "emp002", 2024, 11, 30, 2, "Personal", "Pending"),
   generateLeaveRequest("leave041", "emp003", 2025, 0, 5, 4, "Vacation", "Pending"),
+  // Overlapping with existing approved leave - same department (Engineering)
+  generateLeaveRequest("leave042", "emp016", 2024, 5, 17, 2, "Vacation", "Pending"), // Overlaps with emp001's May 15-19
+  generateLeaveRequest("leave043", "emp017", 2024, 11, 22, 3, "Personal", "Pending"), // Overlaps with multiple December requests
+  // Overlapping with different departments
+  generateLeaveRequest("leave044", "emp018", 2024, 6, 3, 2, "Vacation", "Pending"), // Overlaps with emp003's June 1-7
+  generateLeaveRequest("leave045", "emp019", 2024, 7, 3, 4, "Vacation", "Pending"), // Overlaps with emp007's July 1-10
   generateLeaveRequest("leave042", "emp004", 2025, 0, 8, 2, "Vacation", "Pending"),
   generateLeaveRequest("leave043", "emp005", 2025, 0, 10, 5, "Vacation", "Pending"),
   generateLeaveRequest("leave044", "emp006", 2025, 0, 12, 3, "Personal", "Pending"),
