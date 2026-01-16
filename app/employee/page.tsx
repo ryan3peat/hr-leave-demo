@@ -60,7 +60,7 @@ export default function EmployeeDashboard() {
       </div>
 
       {/* Balance Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <BalanceCard title="Annual Leave Balance" balance={balance} isAnnual={true} />
         <BalanceCard title="Non-Annual Leave Usage" balance={balance} isAnnual={false} />
       </div>
@@ -69,25 +69,25 @@ export default function EmployeeDashboard() {
       <LeaveEstimator />
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <Link href="/employee/submit">
-          <Card className="hover:bg-accent transition-colors cursor-pointer h-full">
-            <CardHeader>
-              <CardTitle className="text-base">Submit Leave</CardTitle>
+          <Card className="modern-card cursor-pointer h-full group">
+            <CardHeader className="pb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Plus className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">Submit Leave</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Plus className="h-8 w-8 text-muted-foreground" />
-            </CardContent>
           </Card>
         </Link>
         <Link href="/employee/calendar">
-          <Card className="hover:bg-accent transition-colors cursor-pointer h-full">
-            <CardHeader>
-              <CardTitle className="text-base">View Calendar</CardTitle>
+          <Card className="modern-card cursor-pointer h-full group">
+            <CardHeader className="pb-4">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                <Calendar className="h-6 w-6 text-primary" />
+              </div>
+              <CardTitle className="text-lg font-semibold group-hover:text-primary transition-colors">View Calendar</CardTitle>
             </CardHeader>
-            <CardContent>
-              <Calendar className="h-8 w-8 text-muted-foreground" />
-            </CardContent>
           </Card>
         </Link>
       </div>

@@ -5,63 +5,85 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-12 px-4">
-      {/* Logo and Header */}
-      <div className="flex flex-col items-center space-y-6">
-        <div className="relative w-32 h-32 md:w-40 md:h-40">
+    <div className="flex flex-col items-center justify-center min-h-[90vh] px-4">
+      {/* Hero Section */}
+      <div className="text-center space-y-8 max-w-4xl mx-auto">
+        {/* Logo */}
+        <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto">
           <Image
             src="/crane_logo.webp"
             alt="Company Logo"
-            width={160}
-            height={160}
-            className="object-contain"
+            width={128}
+            height={128}
+            className="object-contain drop-shadow-lg"
             priority
             unoptimized
           />
         </div>
-        <div className="text-center space-y-3">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 bg-clip-text text-transparent">
-            HR Leave Management System
+
+        {/* Title */}
+        <div className="space-y-4">
+          <h1 className="text-5xl md:text-7xl font-thin tracking-tight text-foreground">
+            Leave
+            <span className="block font-semibold bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent">
+              Management
+            </span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl">
-            Streamline your workforce leave management with our comprehensive solution
+          <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
+            Streamline workforce management with intelligent leave tracking and seamless approvals
           </p>
         </div>
-      </div>
-      
-      {/* Portal Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-3xl">
-        <Card className="border-2 border-blue-200 dark:border-blue-800 hover:border-blue-400 dark:hover:border-blue-600 transition-all duration-300 hover:shadow-xl hover:shadow-blue-100 dark:hover:shadow-blue-900">
-          <CardHeader className="bg-gradient-to-br from-blue-50 to-teal-50 dark:from-blue-950 dark:to-teal-950 rounded-t-lg">
-            <CardTitle className="text-2xl text-blue-700 dark:text-blue-300">Employee Portal</CardTitle>
-            <CardDescription className="text-blue-600 dark:text-blue-400">
-              View your leave balance, submit requests, and track your leave history
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <Link href="/employee">
-              <Button className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
-                Go to Employee Portal
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-2 border-teal-200 dark:border-teal-800 hover:border-teal-400 dark:hover:border-teal-600 transition-all duration-300 hover:shadow-xl hover:shadow-teal-100 dark:hover:shadow-teal-900">
-          <CardHeader className="bg-gradient-to-br from-teal-50 to-blue-50 dark:from-teal-950 dark:to-blue-950 rounded-t-lg">
-            <CardTitle className="text-2xl text-teal-700 dark:text-teal-300">Admin Portal</CardTitle>
-            <CardDescription className="text-teal-600 dark:text-teal-400">
-              Manage employees, approve leave requests, and view analytics
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <Link href="/admin">
-              <Button className="w-full bg-gradient-to-r from-teal-600 to-blue-600 hover:from-teal-700 hover:to-blue-700 text-white h-12 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
-                Go to Admin Portal
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+
+        {/* Portal Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mt-16">
+          <Card className="group border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
+            <CardHeader className="text-center pb-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <CardTitle className="text-2xl font-semibold text-foreground">Employee Portal</CardTitle>
+              <CardDescription className="text-muted-foreground text-base leading-relaxed">
+                Access your leave balance, submit requests, and manage your schedule with ease
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Link href="/employee">
+                <Button className="w-full h-14 text-lg font-medium bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
+                  Access Portal
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="group border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-1">
+            <CardHeader className="text-center pb-6">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <CardTitle className="text-2xl font-semibold text-foreground">Admin Portal</CardTitle>
+              <CardDescription className="text-muted-foreground text-base leading-relaxed">
+                Oversee team management, process approvals, and gain insights through analytics
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <Link href="/admin">
+                <Button className="w-full h-14 text-lg font-medium bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
+                  Access Portal
+                  <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
