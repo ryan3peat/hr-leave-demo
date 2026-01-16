@@ -242,32 +242,34 @@ export function ApprovalQueue() {
                           {leave.submittedAt.toLocaleDateString()}
                         </div>
                       </div>
-                      <div className="flex gap-2 pt-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => withdrawLeaveRequest(leave.id)}
-                          className="flex-1"
-                        >
-                          <Trash2 className="h-4 w-4 mr-1" />
-                          Remove
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="default"
-                          className="flex-1"
-                          onClick={() => openDialog(leave.id, "approve")}
-                        >
-                          <CheckCircle2 className="h-4 w-4 mr-1" />
-                          Approve
-                        </Button>
+                      <div className="space-y-2 pt-2">
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => withdrawLeaveRequest(leave.id)}
+                            className="flex-1 text-xs"
+                          >
+                            <Trash2 className="h-3 w-3 mr-1" />
+                            Remove
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="flex-1 text-xs"
+                            onClick={() => openDialog(leave.id, "approve")}
+                          >
+                            <CheckCircle2 className="h-3 w-3 mr-1" />
+                            Approve
+                          </Button>
+                        </div>
                         <Button
                           size="sm"
                           variant="destructive"
-                          className="flex-1"
+                          className="w-full text-xs"
                           onClick={() => openDialog(leave.id, "reject")}
                         >
-                          <XCircle className="h-4 w-4 mr-1" />
+                          <XCircle className="h-3 w-3 mr-1" />
                           Reject
                         </Button>
                       </div>

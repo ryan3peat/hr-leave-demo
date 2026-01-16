@@ -91,6 +91,28 @@ export function getPublicHolidaysInRange(startDate: Date, endDate: Date): Public
 }
 
 /**
+ * Get the name of the public holiday for a specific date
+ */
+export function getPublicHolidayName(date: Date): string | null {
+  const dateYear = date.getFullYear();
+  const dateMonth = date.getMonth();
+  const dateDay = date.getDate();
+
+  const holiday = HK_PUBLIC_HOLIDAYS.find((h) => {
+    const holidayYear = h.date.getFullYear();
+    const holidayMonth = h.date.getMonth();
+    const holidayDay = h.date.getDate();
+    return (
+      dateYear === holidayYear &&
+      dateMonth === holidayMonth &&
+      dateDay === holidayDay
+    );
+  });
+
+  return holiday ? holiday.name : null;
+}
+
+/**
  * Calculate working days (excluding public holidays and weekends)
  */
 export function calculateWorkingDays(startDate: Date, endDate: Date): number {

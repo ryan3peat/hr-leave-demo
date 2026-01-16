@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { LeaveRequest } from "@/lib/types";
 import { formatDateRange } from "@/lib/dateUtils";
 import { getMonthRange } from "@/lib/dateUtils";
-import { isPublicHoliday } from "@/lib/publicHolidays";
+import { isPublicHoliday, getPublicHolidayName } from "@/lib/publicHolidays";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -259,6 +259,7 @@ export function AdminCalendar() {
               });
 
               const isPublicHolidayDate = isPublicHoliday(date);
+              const holidayName = isPublicHolidayDate ? getPublicHolidayName(date) : null;
 
               return (
                 <div
@@ -270,7 +271,7 @@ export function AdminCalendar() {
                   <div className="flex items-center justify-between mb-1">
                     <div className="font-medium">{day}</div>
                     {isPublicHolidayDate && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-red-500" title="Public Holiday" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-red-500" title={holidayName || "Public Holiday"} />
                     )}
                   </div>
                   <div className="space-y-0.5">
@@ -294,7 +295,9 @@ export function AdminCalendar() {
                       <div className="text-xs text-muted-foreground">No leaves</div>
                     )}
                     {isPublicHolidayDate && Object.keys(leavesByEmployee).length === 0 && (
-                      <div className="text-xs text-red-600 dark:text-red-400">Public Holiday</div>
+                      <div className="text-xs text-red-600 dark:text-red-400" title={holidayName || "Public Holiday"}>
+                        {holidayName || "Public Holiday"}
+                      </div>
                     )}
                   </div>
                 </div>
